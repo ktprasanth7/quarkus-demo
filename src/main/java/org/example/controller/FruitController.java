@@ -6,6 +6,9 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.example.data.Fruit;
+import org.example.data.FruitBox;
+import org.example.request.AddFruitToBoxRequest;
+import org.example.response.AddFruitToBoxResponse;
 import org.example.service.FruitService;
 
 import java.util.List;
@@ -70,6 +73,7 @@ public class FruitController {
     }
 
     @POST
+    @Path("create-fruit")
     public Uni<Fruit> createFruit(Fruit fruit) {
         return service.addFruit(fruit);
     }
@@ -86,11 +90,23 @@ public class FruitController {
         return service.deleteFruit(id);
     }
 
-
     @GET
     @Path("/chain/{name}")
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Fruit> chainMethods(@PathParam("name") String name) {
         return service.chainMethods(name);
+    }
+
+    @POST
+    @Path("create-fruit-box")
+    public Uni<FruitBox> createFruitBox(FruitBox fruitBox) {
+        return service.createFruitBox(fruitBox);
+    }
+
+    @POST
+    @Path("/add-fruit-to-box")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<AddFruitToBoxResponse> addFruitToBox(AddFruitToBoxRequest request) {
+        return service.addFruitToBox(request);
     }
 }

@@ -30,4 +30,10 @@ public class FruitRepository implements PanacheRepositoryBase<Fruit, Long> {
                 .firstResult()
                 .onItem().ifNull().failWith(() -> new RuntimeException("Fruit not found with id " + id + " and name " + name));
     }
+
+    public Uni<Fruit> findByName(String name) {
+        return find("name = ?1", name)
+                .firstResult()
+                .onItem().ifNull().failWith(() -> new RuntimeException("Fruit not found with name " + name));
+    }
 }

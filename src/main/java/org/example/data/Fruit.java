@@ -5,9 +5,12 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Entity
 @Getter
 @Setter
+@Table(name = "fruit")
 public class Fruit extends PanacheEntityBase {
 
     @Id
@@ -22,4 +25,12 @@ public class Fruit extends PanacheEntityBase {
 
     @Column
     public Integer price;
+
+    @Column
+    public BigDecimal decimal;
+
+
+    @ManyToOne
+    @JoinColumn(name = "fruit_box_id")
+    public FruitBox fruitBox;
 }
