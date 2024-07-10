@@ -29,7 +29,6 @@ public class Fruit extends PanacheEntityBase {
     @Column
     public BigDecimal decimal;
 
-
     @ManyToOne
     @JoinColumn(name = "fruit_box_id")
     public FruitBox fruitBox;

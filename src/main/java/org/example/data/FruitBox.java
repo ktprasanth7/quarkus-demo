@@ -20,7 +20,7 @@ public class FruitBox extends PanacheEntityBase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
-    @OneToMany(mappedBy = "fruitBox", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "fruitBox", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     public List<Fruit> fruitList;
 
     // Example using a list of fruit IDs
@@ -39,6 +39,10 @@ public class FruitBox extends PanacheEntityBase {
 
     @Column
     public Integer quantity;
+
+    @ManyToOne
+    @JoinColumn(name = "shop_id")
+    public Shop shop;
 
     // Initializing fruitList at the time of accessing this object
     public List<Fruit> getFruitList() {

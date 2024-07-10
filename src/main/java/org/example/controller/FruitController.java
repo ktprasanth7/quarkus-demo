@@ -5,8 +5,11 @@ import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.example.data.Fruit;
 import org.example.data.FruitBox;
+import org.example.data.Shop;
 import org.example.request.AddFruitToBoxRequest;
 import org.example.response.AddFruitToBoxResponse;
 import org.example.service.FruitService;
@@ -74,7 +77,7 @@ public class FruitController {
 
     @POST
     @Path("create-fruit")
-    public Uni<Fruit> createFruit(Fruit fruit) {
+    public Uni<Fruit> createFruit(@RequestBody Fruit fruit) {
         return service.addFruit(fruit);
     }
 
@@ -105,8 +108,16 @@ public class FruitController {
 
     @POST
     @Path("/add-fruit-to-box")
+    @Operation(summary = "Update candidate by ID", description = "Updates a candidate's information by their ID.")
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<AddFruitToBoxResponse> addFruitToBox(AddFruitToBoxRequest request) {
         return service.addFruitToBox(request);
+    }
+
+    @GET
+    @Path("/shop")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<Shop> createSop() {
+        return service.createShop();
     }
 }

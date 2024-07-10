@@ -7,8 +7,10 @@ import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.example.data.Fruit;
 import org.example.data.FruitBox;
+import org.example.data.Shop;
 import org.example.repository.FruitBoxRepository;
 import org.example.repository.FruitRepository;
+import org.example.repository.ShopRepository;
 import org.example.request.AddFruitToBoxRequest;
 import org.example.response.AddFruitToBoxResponse;
 import org.hibernate.Hibernate;
@@ -28,9 +30,17 @@ public class FruitService {
     @Inject
     FruitBoxRepository fruitBoxRepository;
 
+    @Inject
+    ShopRepository shopRepository;
+
     @WithTransaction
     public Uni<List<Fruit>> listAll() {
         return fruitRepository.listAll();
+    }
+
+    @WithTransaction
+    public Uni<List<FruitBox>> listAllBoxes() {
+        return fruitBoxRepository.listAll();
     }
 
     @WithTransaction
@@ -210,5 +220,28 @@ public class FruitService {
                             return Uni.createFrom().item(response);
                         })
                 );
+    }
+
+    @WithTransaction
+    public Uni<Shop> createShop() {
+        return listAllBoxes().flatMap(fruitBoxes -> {
+            // Initialize fruitBoxes eagerly within the transactional context
+            Mutiny.fetch(fruitBoxes);
+            fruitBoxes.size(); // This forces Hibernate to initialize the collection
+
+            Shop newShop = new Shop();
+            newShop.setDescription("Fresh Fruit Boxes");
+            newShop.setBoxesCount(2);
+
+            // Initialize a fruit list within each FruitBox
+            fruitBoxes.forEach(fruitBox -> {
+                fruitBox.setShop(newShop);
+                Mutiny.fetch(fruitBox.getFruitList().size()); // Fetch the lazy-loaded fruitList
+            });
+
+            newShop.setFruitBoxes(fruitBoxes);
+
+            return shopRepository.persist(newShop);
+        });
     }
 }
